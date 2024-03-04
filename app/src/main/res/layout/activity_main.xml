@@ -31,17 +31,18 @@
             android:layout_gravity="bottom|end"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
             android:fontFamily="@font/roboto"
             android:gravity="end"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:text="@string/trying"
+            android:text=""
             android:textAlignment="textEnd"
             android:textColor="@color/light_gray"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/Inputing_area"
+            android:id="@+id/Insertion_area"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -49,12 +50,13 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/roboto"
             android:gravity="end"
+            android:maxLength="12"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:text="@string/default_value"
             android:textAlignment="textEnd"
             android:textColor="@color/white"
-            android:textSize="40sp" />
+            android:textSize="50sp" />
 
     </LinearLayout>
 

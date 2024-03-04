@@ -3,6 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="back_gray">#FF242222</color>
+    <color name="theme_color">#292727</color>
     <color name="button_red">#FFEF4444</color>
+    <color name="button_dark_red">#FF7C2727</color>
     <color name="light_gray">#FF787878</color>
 </resources>
