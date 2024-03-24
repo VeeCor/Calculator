@@ -1,17 +1,19 @@
 package com.example.firstprog;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+//import android.widget.Toast;
 
-import java.text.DecimalFormat;
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,12 +73,26 @@ public class MainActivity extends AppCompatActivity {
         button_back.setOnClickListener(ClickBackButton);
         button_ac.setOnClickListener(ClickClearButton);
         button_equals.setOnClickListener(ClickEqualButton);
+
+        buttonEffect(button0);
+        buttonEffect(button1);
+        buttonEffect(button2);
+        buttonEffect(button3);
+        buttonEffect(button4);
+        buttonEffect(button5);
+        buttonEffect(button6);
+        buttonEffect(button7);
+        buttonEffect(button8);
+        buttonEffect(button9);
+        buttonEffect(button_ac);
+        buttonEffect(button_back);
+        buttonEffect(button_dot);
+        buttonEffect(button_equals);
     }
 
     private final View.OnClickListener ClickBackButton = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             if(!EqualsUsed) {
                 //Создание переменной text и сохранение в нее введенного в область ввода числа
                 String text = Insertion_area.getText().toString();
@@ -113,68 +129,114 @@ public class MainActivity extends AppCompatActivity {
     private final View.OnClickListener ClickEqualButton = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //Вызов метода смены цвета кнопок символов
-            changeColorSymbolButton();
-            //Сохранение введенного в области ввода числа, при условии, что знак равно не был использован ранее
-            if(!EqualsUsed) {
-                num2 = Insertion_area.getText().toString();
-            }
+            if(num1 != null) {
+                //Вызов метода смены цвета кнопок символов
+                changeColorSymbolButton();
+                //Сохранение введенного в области ввода числа, при условии, что знак равно не был использован ранее
+                if (!EqualsUsed) {
+                    num2 = Insertion_area.getText().toString();
+                }
             /*
             Преобразование введенных чисел в переменных num1 и num2 из формата string в формат double;
             Создание переменной LastHistoryText для сохранения получившегося примера в привычном математическом виде с отображением чисел и знака;
             Запись в область вывода истории вычисляемого примера из переменной LastHistoryText;
             Отчистка области ввода;
              */
-            double nam1_double = Double.parseDouble(num1);
-            double nam2_double = Double.parseDouble(num2);
-            String LastHistoryText = num1 + " " + symbol + " " + num2;
-            LastHistory.setText(LastHistoryText);
-            Insertion_area.setText(null);
+                double nam1_double = Double.parseDouble(num1);
+                double nam2_double = Double.parseDouble(num2);
+                String LastHistoryText = num1 + " " + symbol + " " + num2;
+                LastHistory.setText(LastHistoryText);
+                Insertion_area.setText(null);
             /*
             Проверка "какой знак был использован";
             Проведение вычислений в зависимости от знака;
              */
-            switch (symbol){
-                case "+":
-                    result = nam1_double + nam2_double;
-                    break;
-                case "-":
-                    result = nam1_double - nam2_double;
-                    break;
-                case "×":
-                    result = nam1_double * nam2_double;
-                    break;
-                case "÷":
-                    //Проверка деления на 0
-                    if(nam2_double != 0f){
-                        result = nam1_double / nam2_double;
-                    }else {
-                        DivZero = true;
+                switch (symbol) {
+                    case "+":
+                        result = nam1_double + nam2_double;
+                        break;
+                    case "-":
+                        result = nam1_double - nam2_double;
+                        break;
+                    case "×":
+                        result = nam1_double * nam2_double;
+                        break;
+                    case "÷":
+                        //Проверка деления на 0
+                        if (nam2_double != 0f) {
+                            result = nam1_double / nam2_double;
+                        } else {
+                            DivZero = true;
+                        }
+                        break;
+                }
+                String resultFormat = Double.toString(result);
+                if (DivZero) {
+                    //Вывод ошибки если была потытка деления на 0
+                    String Error = "Error";
+                    Insertion_area.setText(Error);
+                    DivZero = false;
+                } else if (result % 1 == 0) {
+                    //Отображение целого числа формата double без точки и нуля на конце и вывод результата
+                    resultFormat = resultFormat.replaceAll("0*$", "");
+                    resultFormat = resultFormat.replaceAll("\\.$", "");
+                    Insertion_area.setText(resultFormat);
+                } else {
+                    //Вывод результата
+                    if (resultFormat.length() > 10) {
+                        resultFormat = resultFormat.substring(0, 11);
+                        while(resultFormat.charAt(resultFormat.length() - 1) == '0'){
+                            resultFormat = resultFormat.substring(0, resultFormat.length() - 1);
+                        }
+                        if(resultFormat.length() > 10){
+                            BigDecimal resultBigDecimal = new BigDecimal(resultFormat);
+                            int dotIndex = resultFormat.indexOf('.');
+                            int ScaleNum;
+                            switch (dotIndex){
+                                case 1:
+                                    ScaleNum = 8;
+                                    break;
+                                case 2:
+                                    ScaleNum = 7;
+                                    break;
+                                case 3:
+                                    ScaleNum = 6;
+                                    break;
+                                case 4:
+                                    ScaleNum = 5;
+                                    break;
+                                case 5:
+                                    ScaleNum = 4;
+                                    break;
+                                case 6:
+                                    ScaleNum = 3;
+                                    break;
+                                case 7:
+                                    ScaleNum = 2;
+                                    break;
+                                default:
+                                    ScaleNum = 1;
+                                    break;
+                            }
+                            BigDecimal roundedResult = resultBigDecimal.setScale(ScaleNum, RoundingMode.HALF_UP);
+                            resultFormat = roundedResult.toString();
+                            Insertion_area.setText(resultFormat);
+                        }else{
+                            Insertion_area.setText(resultFormat);
+                        }
+                    } else {
+                        Insertion_area.setText(resultFormat);
                     }
-                    break;
-            }
-            if(DivZero){
-                //Вывод ошибки если была потытка деления на 0
-                String Error = "Error";
-                Insertion_area.setText(Error);
-                DivZero = false;
-            } else if (result % 1 == 0) {
-                //Отображение целого числа формата double без точки и нуля на конце и вывод результата
-                DecimalFormat decimalFormat = new DecimalFormat("0");
-                String NoZero = decimalFormat.format(result);
-                Insertion_area.setText(String.valueOf(NoZero));
-            } else{
-                //Вывод результата
-                Insertion_area.setText(String.valueOf(result));
-            }
+                }
             /*
             Присвоение переменной числа из области ввода;
             Удаление знака из переменной symbol2;
             Смена значения на true, означающее, что знак равно был нажат;
              */
-            num1 = Insertion_area.getText().toString();
-            symbol2 = null;
-            EqualsUsed = true;
+                num1 = Insertion_area.getText().toString();
+                symbol2 = null;
+                EqualsUsed = true;
+            }
         }
     };
 
@@ -184,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
             /*
             Вызов метода удаления всего, если вычисления были выполнены (знак равно нажимался)
             и при этом не выбран знак для дальнейших вычислений
-
             */
             if(EqualsUsed && symbol2 == null) {
                 ClickClearButton.onClick(v);
@@ -194,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
             при условии, что первое число введено и при этом поле истории пустое,
             или, если это не первое вычислительное действие (знак равно уже был нажат ранее);
             Сброс события "знак равно был нажат";
-             */
+            */
             if ((num1 != null && LastHistory.getText().toString().isEmpty()) | EqualsUsed) {
                 LastHistory.setText(num1);
                 Insertion_area.setText(null);
@@ -202,21 +263,29 @@ public class MainActivity extends AppCompatActivity {
                     EqualsUsed = false;
                 }
             }
-
             //Преобразование объекта view в button и считываение текста кнопки
             Button btn = (Button) v;
             String btnText = btn.getText().toString();
-
             /*
             Установка ограничения на ввод - не более 6 символов;
             Вывод числа в область ввода, если в области ввода введен 0;
             Добавление цифры с кнопки в конец вводимого числа, если в области ввода числа отличные от 0;
-             */
+            */
             if(Insertion_area.length() < 6) {
+                String text = Insertion_area.getText().toString();
                 if (Insertion_area.getText().toString().equals("0")) {
-                    Insertion_area.setText(btnText);
-                } else {
+                    if(btnText.equals(".")){
+                        btnText = "0.";
+                        Insertion_area.setText(btnText);
+                    }else {
+                        Insertion_area.setText(btnText);
+                    }
+                } else if (!text.contains(".")){
                     Insertion_area.append(btnText);
+                } else{
+                    if(!btnText.equals(".")){
+                        Insertion_area.append(btnText);
+                    }
                 }
             }
         }
@@ -230,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
             Сохранение другого цвета для нажатой кнопки в переменную;
             Преобразование объекта view в button и изменение цвета кнопки;
             Сохранение нажатого знака в переменную symbol;
-             */
+            */
             changeColorSymbolButton();
             int color = ContextCompat.getColor(MainActivity.this, R.color.button_dark_red);
             Button btn = (Button) v;
@@ -258,4 +327,27 @@ public class MainActivity extends AppCompatActivity {
         button_div.setBackgroundTintList(ColorStateList.valueOf(currentColor));
         button_multiplication.setBackgroundTintList(ColorStateList.valueOf(currentColor));
     }
+
+    private void buttonEffect(@NonNull View button) {
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    int ClickColor = ContextCompat.getColor(MainActivity.this, R.color.button_dark_red);
+                    v.setBackgroundTintList(ColorStateList.valueOf(ClickColor));
+                    return true;
+                }
+                case MotionEvent.ACTION_UP: {
+                    int currentColor = ContextCompat.getColor(MainActivity.this, R.color.button_red);
+                    v.setBackgroundTintList(ColorStateList.valueOf(currentColor));
+                    v.performClick();
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+//    private void showinfo (String text){
+//        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+//    }
 }
