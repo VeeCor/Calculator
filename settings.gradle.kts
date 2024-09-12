@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "First Prog"
+rootProject.name = "Spider Calculator"
 include(":app")
  

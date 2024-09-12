@@ -1,6 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.FirstProg" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/theme_color</item>
+    <style name="Base.Theme.FirstProg" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/back_gray</item>
+        <item name="android:navigationBarColor">@color/back_gray</item>
+        <item name="android:statusBarColor">@color/back_gray</item>
     </style>
     <style name="Theme.FirstProg" parent="Base.Theme.FirstProg" />
+
+    <style name="ButtonStyle" parent="TextAppearance.MaterialComponents.Button">
+        <item name="backgroundTint">@color/button_red</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="cornerRadius">10dp</item>
+
+    </style>
 </resources>
